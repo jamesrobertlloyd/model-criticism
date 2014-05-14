@@ -187,9 +187,16 @@ x            -10.645      4.656  -2.286   0.0267 *
 \begin{frame}{Is being Bayesian enough?}
   \begin{itemize}
     \item Why not just do all inference in a super model that contains everything we could ever possibly believe?
+    \pause
+    \begin{itemize}
+      \item And then \eg estimate the utility of smaller models for certain tasks
+    \end{itemize}
     \vspace{\baselineskip}
     \pause
-    \item How long did you spend coding your last inference scheme / have you ever got probabilistic programming to work in a non-trivial model?
+    \item How long did you spend coding your last inference scheme?
+    \begin{itemize}
+      \item Or have you ever got probabilistic programming to work in a non-trivial model?
+    \end{itemize}
     \vspace{\baselineskip}
     \pause
     \item Model criticism / checking gives us tools to explore potential inadequacies of a method\dots
@@ -203,15 +210,21 @@ x            -10.645      4.656  -2.286   0.0267 *
   \begin{itemize}
     \item Classical diagnostics for linear regression
     \vspace{\baselineskip}
-    \item Theory
+    \item Frequentist theory
     \vspace{\baselineskip}
     \item Bayesian model criticism
     \vspace{\baselineskip}
     \item A concern about calibration
     \vspace{\baselineskip}
     \item Methods for Gaussian processes
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Non-agenda}
+  \begin{itemize}
+    \item Sensitivity analysis
     \vspace{\baselineskip}
-    \item Other advanced methods
+    \item Estimates of model utility
   \end{itemize}
 \end{frame}
 
@@ -310,7 +323,7 @@ Toyota Corolla  2.51597            0.01838      0.58816
     \end{itemize}
     \pause
     \vspace{\baselineskip}
-    \item We can formalise this by calculating the influence of each data point
+    \item We can calculate the influence of each data point on the model fit as follows
     \begin{itemize}
       \item $D_i = \frac{\sum_{j=1}^n (\hat{y}_j - \hat{y}_{j(i)})^2}{p \times \textrm{MSE}}$ \ie Cook's distance
     \end{itemize}
@@ -409,12 +422,35 @@ Toyota Corolla  2.51597            0.01838      0.58816
     \vspace{\baselineskip}
     \pause
     \item Ill-defined when using improper priors 
+    \vspace{\baselineskip}
+    \pause
+    \item Vague priors can lead to vague tests
     \begin{itemize}
       \item Probably best used when one really has a subjective prior
     \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Example: Speed of light data}
+  \begin{center}
+    \begin{tikzpicture}[scale=1]
+      \begin{scope}[xshift=0\textwidth]
+        \node [mybox] (box){
+          \includegraphics[width=0.45\textwidth]{figures/newcomb_hist.pdf}
+        };
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+  \begin{itemize}
+    \pause
+    \item Suppose we wish to fit a normal distribution to this data with vague priors on the mean and variance
     \vspace{\baselineskip}
     \pause
-    \item When using vague priors the resulting test may also be a bit vague
+    \item We could test this assumption using skewness as the test statistic
+    \pause
+    \begin{itemize}
+      \item Skewness = -4.5; $p$-value = tiny
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -439,6 +475,33 @@ Toyota Corolla  2.51597            0.01838      0.58816
   \end{itemize}
 \end{frame}
 
+\begin{frame}{Example: Speed of light data again}
+  \begin{itemize}
+    \item Is the minimum value in the data surprising?
+    \vspace{\baselineskip}
+    \pause
+    \item A prior predictive would be vague about this quantity
+    \vspace{\baselineskip}
+    \pause
+    \item Instead we can test this by sampling data sets of the same size from the posterior, and recording their minima
+    \pause
+  \end{itemize}
+  \begin{center}
+    \begin{tikzpicture}[scale=1]
+      \begin{scope}[xshift=0\textwidth]
+        \node [mybox] (box){
+          \includegraphics[width=0.45\textwidth]{figures/minima_hist.pdf}
+        };
+      \end{scope}
+      \begin{scope}[xshift=0.5\textwidth]
+        \node [mybox] (box){
+          \includegraphics[width=0.45\textwidth]{figures/newcomb_hist.pdf}
+        };
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
 \begin{frame}{Discrepancy $p$-values}
   \begin{itemize}
     \item Gelman et alia \cite{Gelman1996-ez} proposed generalising the statistic $T(x)$ to a discrepancy measure $d(x, \theta)$ which depends on the parameters $\theta$ of the model
@@ -447,12 +510,83 @@ Toyota Corolla  2.51597            0.01838      0.58816
     \item The observed discrepancy is again compared to the posterior predictive distribution
     \vspace{\baselineskip}
     \pause
-    \item Popular due to their generality and ease of use
+    \item $p_{\textrm{dis}}(x_{\textrm{obs}}) = \mathbb{P}(d(X,\theta) \geq d(x_{\textrm{obs}},\theta)\,|\,x_{\textrm{obs}})$
+    \vspace{\baselineskip}
+    \pause
+    \item Can be estimated using samples of the joint posterior distribution of $(X, \theta)$ \eg from MCMC
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Examples}
-  \TBD{Show these methods in action}
+\begin{frame}{Example: Forecasting U.S.\ elections}
+  \begin{itemize}
+    \item Copied without permission from Gelman, A. et al. Bayesian Data Analysis, Third Edition. (Taylor \& Francis, 2013)
+    \vspace{\baselineskip}
+    \item Fitting a linear model to proportion of votes for Democrats by state for 11 presidential elections
+  \end{itemize}
+  \begin{center}
+    \begin{tikzpicture}[scale=1]
+      \begin{scope}[xshift=0\textwidth]
+        \node [mybox] (box){
+          \includegraphics[width=0.8\textwidth]{figures/linear.jpg}
+        };
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Example: Forecasting U.S.\ elections}
+  \begin{center}
+    \begin{tikzpicture}[scale=1]
+      \begin{scope}[xshift=0\textwidth]
+        \node [mybox] (box){
+          \includegraphics[width=0.8\textwidth]{figures/variables.jpg}
+        };
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Example: Forecasting U.S.\ elections}
+  \begin{itemize}
+    \item Linear model assumes that each (input, output) tuple is exchangeable
+    \vspace{\baselineskip}
+    \pause
+    \item This ignores any correlation between states in a particular year due to nationwide swings in voting
+    \vspace{\baselineskip}
+    \pause
+    \item We can construct a test staistic that can test for this correlation
+    \begin{itemize}
+      \item For each year compute the average error of the prediction in each state
+      \item Compute the root mean square of these averageerrors over the 11 years
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Example: Forecasting U.S.\ elections}
+  \begin{center}
+    \begin{tikzpicture}[scale=1]
+      \begin{scope}[xshift=0\textwidth]
+        \node [mybox] (box){
+          \includegraphics[width=0.8\textwidth]{figures/model_check.jpg}
+        };
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Example: Forecasting U.S.\ elections}
+  \begin{itemize}
+    \item The posterior distribution underestimates the test statistic
+    \vspace{\baselineskip}
+    \pause
+    \item The practical consequence of this is that the model will give overly precise predictions of national election results
+    \vspace{\baselineskip}
+    \pause
+    \item The model can be improved by adding indicator variables for each year
+    \begin{itemize}
+      \item Can also include year $\times$ region features to capture regional voting swings
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{A problem of calibration}
@@ -478,7 +612,7 @@ Toyota Corolla  2.51597            0.01838      0.58816
     \end{itemize}
     \vspace{\baselineskip}
     \pause
-    \item Prior predictive $p$-values test a prior distribution
+    \item Prior predictive $p$-values test a particular prior distribution
     \begin{itemize}
       \item The null hypothesis is that the data were generated from the prior distribution
     \end{itemize}
@@ -498,6 +632,13 @@ Toyota Corolla  2.51597            0.01838      0.58816
 
 \begin{frame}{Choosing the statistic}
   \TBD{Find some fun quotes and allude to my own work}
+\end{frame}
+
+\begin{frame}{Thanks}
+  \begin{center}
+  \Huge
+  Thanks
+  \end{center}
 \end{frame}
 
 {

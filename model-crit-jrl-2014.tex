@@ -627,7 +627,29 @@ Toyota Corolla  2.51597            0.01838      0.58816
 \end{frame}
 
 \begin{frame}{Model criticism for Gaussian processes}
-  \TBD{Show some of my recent stuff}
+  \begin{itemize}
+    \item Suppose that $y_i \sim f(x_i) + \varepsilon_i$ where
+    \begin{itemize}
+      \item $f \sim \mathcal{GP}(0, k)$
+      \item $\varepsilon \simiid \mathcal{N}(0, \sigma^2)$
+    \end{itemize}
+    \vspace{\baselineskip}
+    \pause
+    \item We might be interested in testing the residuals
+    \begin{itemize}
+      \pause
+      \item We can construct a discrepancy measure based on some function of $y_i - f(x_i)$
+      \pause
+      \item A posterior predictive check would then correspond to comparing some function of the prior and posterior of $\varepsilon$
+    \end{itemize}
+    \vspace{\baselineskip}
+    \pause
+    \item Similarly, we could construct discrepancies based on $y_i - \varepsilon_i$
+    \begin{itemize}
+      \pause
+      \item This amounts to comparing the prior and posterior of $f$
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Choosing the statistic}
